@@ -136,6 +136,7 @@
 
 #### C4. 자기 점검 질문 (Self-Check Questions)
 - 5~7개의 O/X 또는 단답형 질문
+- 질문과 답 모두 blockquote(>) 안에 표시
 - 답은 접이식 블록(`<details>`)에 포함
 - 핵심 개념의 이해도를 빠르게 확인할 수 있는 질문
 
@@ -252,12 +253,12 @@
 
 ### 답안 접이식 블록
 ```markdown
-<details>
-<summary>클릭하여 펼치기</summary>
-
-내용
-
-</details>
+> <details>
+> <summary>클릭하여 펼치기</summary>
+> 
+> 내용
+> 
+> </details>
 ```
 
 ---
