@@ -1,8 +1,7 @@
 # 작업: Chapter 학습 자료의 ASCII 아트를 D2Coding Ligature 폰트에 맞춰 재생성
 
 ## 대상 파일
-경로: `<여기에 Chapter 파일들이 있는 디렉토리 경로>`
-파일 패턴: `Chapter*.md` (또는 실제 파일 패턴)
+파일 패턴: `chapter-*.md`
 
 ## 폰트 너비 규칙 (D2Coding Ligature 기준, 엄격 준수)
 
@@ -11,11 +10,11 @@
 - **2 columns (전각)**
   - 한글 음절 (U+AC00~U+D7A3): 가, 나, 다, 안, 녕, ...
   - 한글 자모 (U+3130~U+318F): ㄱ, ㅎ, ㅏ, ㅣ, ...
-  - 전각 기호: ※, ○, ●, ◆, ■, □, ★, ☆, ←, →, ↑, ↓ 등
 - **1 column (반각)**
   - ASCII 영문: A-Z, a-z
   - ASCII 숫자: 0-9
   - ASCII 기호: ! @ # $ % ^ & * ( ) _ + - = [ ] { } ; ' : " , . / < > ? \ | ` ~
+  - 기호: ※, ○, ●, ◆, ■, □, ★, ☆, ←, →, ↑, ↓, ▲, ▼, ◀, ▶ 등
   - 공백: (space)
   - 박스 드로잉 (U+2500~U+257F): ─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ ═ ║ ╔ ╗ ╚ ╝ ╠ ╣ ╦ ╩ ╬
 - **금지 문자** (폭이 불안정하거나 폰트 의존적)
@@ -37,6 +36,7 @@
    - 박스는 `┌─┐│└─┘` 또는 이중선 `╔═╗║╚═╝` 사용
    - 한글 레이블과 영문/기호가 섞이는 경우, 줄마다 visual width가 정확히 일치해야 함
    - 표/다이어그램에서 세로 구분선(`│`)은 모든 행에서 동일한 column 위치에 있어야 함
+   - ASCII 아트 내 화살표는 식별성이 좋도록 `─▶`, `◀─`, `▼`, `▲`, `◀─▶` 사용을 권장
 
 3. **검증 (필수)**
    - 매 ASCII 아트마다 아래 Python 함수로 각 줄의 visual width 계산
@@ -46,37 +46,6 @@
 4. **파일 업데이트**
    - 검증 통과한 ASCII 아트로 원본 파일의 해당 블록만 교체
    - 본문, 목차, 예제 등 아트 외의 내용은 건드리지 않음
-
-## 검증 함수
-
-```python
-def visual_width(s: str) -> int:
-    """D2Coding Ligature 기준 시각적 폭 계산"""
-    width = 0
-    for ch in s:
-        code = ord(ch)
-        if 0xAC00 <= code <= 0xD7A3:      # 한글 음절
-            width += 2
-        elif 0x3130 <= code <= 0x318F:    # 한글 자모
-            width += 2
-        elif 0x2600 <= code <= 0x26FF:    # 기타 기호 (대부분 전각)
-            width += 2
-        elif code in (0x2190, 0x2191, 0x2192, 0x2193, 0x2194, 0x2195):  # 화살표
-            width += 2
-        elif 0x25A0 <= code <= 0x25FF:    # 기하학적 도형
-            width += 2
-        elif 0x2500 <= code <= 0x257F:    # 박스 드로잉
-            width += 1
-        elif code < 0x80:                  # ASCII
-            width += 1
-        else:
-            raise ValueError(f"폭이 불확실한 문자: {ch!r} (U+{code:04X})")
-    return width
-
-def verify_box(lines: list[str]) -> None:
-    widths = [visual_width(l) for l in lines]
-    assert len(set(widths)) == 1, f"폭 불일치: {widths}"
-```
 
 ## 보고 형식
 
